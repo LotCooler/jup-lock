@@ -1,5 +1,7 @@
 pub mod process_initialize_lock_escrow_from_file;
 pub use process_initialize_lock_escrow_from_file::*;
+pub mod process_initialize_lock_escrow_from_file2;
+pub use process_initialize_lock_escrow_from_file2::*;
 pub mod process_create_merkle_tree;
 pub use process_create_merkle_tree::*;
 pub mod process_generate_test_lock;

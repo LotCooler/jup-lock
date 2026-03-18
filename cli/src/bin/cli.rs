@@ -59,6 +59,8 @@ impl Args {
 pub enum Commands {
     /// Claim unlocked tokens
     InitializeLockEscrowFromFile(InitializeLockEscrowFromFileArgs),
+    /// Claim unlocked tokens 2022 (did they really mean claim? Doesn't this create a lock escrow??)
+    InitializeLockEscrowFromFile2(InitializeLockEscrowFromFileArgs),
     /// Create merkle tree and print root
     CreateMerkleTree(CreateMerkleTreeArgs),
     /// Generate test lock
@@ -198,6 +200,9 @@ fn main() {
     match &args.command {
         Commands::InitializeLockEscrowFromFile(sub_args) => {
             process_initialize_lock_escrow_from_file(&args, sub_args)
+        }
+        Commands::InitializeLockEscrowFromFile2(sub_args) => {
+            process_initialize_lock_escrow_from_file2(&args, sub_args)
         }
         Commands::CreateMerkleTree(sub_args) => process_create_merkle_tree(sub_args),
         Commands::GenerateTestLock(subg_args) => process_generate_test_lock(subg_args),
