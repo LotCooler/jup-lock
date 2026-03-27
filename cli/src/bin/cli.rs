@@ -61,6 +61,8 @@ pub enum Commands {
     InitializeLockEscrowFromFile(InitializeLockEscrowFromFileArgs),
     /// Claim unlocked tokens 2022 (did they really mean claim? Doesn't this create a lock escrow??)
     InitializeLockEscrowFromFile2(InitializeLockEscrowFromFileArgs),
+    /// Actually claim all tokens from escrow
+    InitializeClaimEscrowFromFile2(InitializeClaimEscrowFromFile2Args),
     /// Create merkle tree and print root
     CreateMerkleTree(CreateMerkleTreeArgs),
     /// Generate test lock
@@ -75,6 +77,12 @@ pub enum Commands {
     CreateVestingEcrowFromRoot(CreateVestingEcrowFromRootArgs),
     /// Verify all escrows has been created
     VerifyAllEscrowCreated(VerifyAllEscrowCreatedArgs),
+}
+
+#[derive(Parser, Debug)]
+pub struct InitializeClaimEscrowFromFile2Args {
+    #[clap(long, env)]
+    pub wallet_path: PathBuf,
 }
 
 #[derive(Parser, Debug)]
@@ -204,6 +212,10 @@ fn main() {
         Commands::InitializeLockEscrowFromFile2(sub_args) => {
             process_initialize_lock_escrow_from_file2(&args, sub_args)
         }
+        Commands::InitializeClaimEscrowFromFile2(sub_args) => {
+            process_initialize_claim_escrow_from_file2(&args, sub_args)
+        }
+        //InitializeClaimEscrowFromFile2(InitializeClaimEscrowFromFile2Args)
         Commands::CreateMerkleTree(sub_args) => process_create_merkle_tree(sub_args),
         Commands::GenerateTestLock(subg_args) => process_generate_test_lock(subg_args),
         Commands::CreateRootEscrow(sub_args) => process_create_root_escrow(&args, sub_args),
