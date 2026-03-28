@@ -140,6 +140,39 @@ fn claim_escrow_for_an_user2(
             .data(),
     });
 
+    let (escrow_metadata, _bump) = Pubkey::find_program_address(
+        &[b"escrow_metadata".as_ref(), escrow.as_ref()],
+        &locker::ID,
+    );
+
+    ixs.push(Instruction {
+        program_id: locker::ID,
+        accounts: locker::accounts::CloseVestingEscrowCtx {
+            escrow: sub_args.escrow,
+
+            escrow_metadata,
+            token_mint: sub_args.token_mint,
+            escrow_token: spl_associated_token_account::get_associated_token_address_with_program_id(   //TESTING UNSURE IF THIS IS CORRECT
+                                                             &escrow,
+                                                             &token_mint,
+                                                             &token_2022::ID),
+            creator_token: spl_associated_token_account::get_associated_token_address_with_program_id(    //TESTING UNSURE IF THIS IS CORRECT
+                                                             &keypair.pubkey(),
+                                                             &token_mint,
+                                                             &token_2022::ID),
+            creator: wallet,
+            token_program: token_2022::ID,
+            memo_program: memo::ID,
+            event_authority,
+            program: locker::ID,
+        }
+            .to_account_metas(None),
+        data: locker::instruction::CloseVestingEscrow {
+            remaining_accounts_info: None,
+        }
+            .data(),
+    });
+
     let blockhash = client.get_latest_blockhash().unwrap();
     let tx = Transaction::new_signed_with_payer(
         &ixs,
