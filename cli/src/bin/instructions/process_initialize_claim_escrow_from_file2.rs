@@ -13,10 +13,13 @@ use anchor_spl::memo;
 use anyhow::{Ok, Result};
 use locker::{handle_cancel_vesting_escrow, handle_close_vesting_escrow, CancelVestingEscrowCtx, CloseVestingEscrowCtx, CreateVestingEscrowParameters};
 use serde::{Deserialize, Serialize};
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 use std::str::FromStr;
 use anchor_lang::context::Context;
 use locker::util::RemainingAccountsInfo;
+
+use std::io::{self, Write};
+
 
 /// Represents a single entry in a CSV
 #[derive(Debug, Clone, Eq, Hash, PartialEq, Serialize, Deserialize)]
@@ -184,6 +187,14 @@ fn claim_escrow_for_an_user2(
     let signature = client
         .send_and_confirm_transaction_with_spinner(&tx)
         .unwrap();
+
+    let mut file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("claimedEscrows.txt")?;
+
+    writeln!(file, "Claimed. escrow:{:?}",
+             &escrow.to_string())?;
 
     Ok(signature)
 }

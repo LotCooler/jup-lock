@@ -15,6 +15,9 @@ use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::str::FromStr;
 
+use std::fs::OpenOptions;
+use std::io::{self, Write};
+
 /// Represents a single entry in a CSV
 #[derive(Debug, Clone, Eq, Hash, PartialEq, Serialize, Deserialize)]
 struct CsvEntry2 {
@@ -192,10 +195,23 @@ fn create_lock_escrow_for_an_user2(
         .unwrap();
 
     println!(
-        "Created lock escrow: {:?} for token mint: {:?}",
+        "Created. escrow:{:?},token_mint:{:?},amount:{:?},txid:{:?}",
             &escrow.to_string(),
-            &token_mint.to_string()
+            &token_mint.to_string(),
+            sub_args.cliff_unlock_amount.to_string(),
+            signature.to_string()
     );
+
+    let mut file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("createdEscrows.txt")?;
+
+    writeln!(file, "Created. escrow:{:?},token_mint:{:?},amount:{:?},txid:{:?}",
+             &escrow.to_string(),
+             &token_mint.to_string(),
+             sub_args.cliff_unlock_amount.to_string(),
+             signature.to_string())?;
 
     Ok(signature)
 }
