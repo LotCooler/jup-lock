@@ -18,6 +18,8 @@ use std::str::FromStr;
 /// Represents a single entry in a CSV
 #[derive(Debug, Clone, Eq, Hash, PartialEq, Serialize, Deserialize)]
 struct CsvEntry2 {
+    /// token mint
+    pub token_mint: String,
     /// address
     pub address: String,
     /// cliff_unlock_amount
@@ -60,7 +62,7 @@ fn create_lock_escrow2(args: &Args, sub_args: &InitializeLockEscrowFromFileArgs)
             args,
             &LockEscrowForAnUserParam2{
                 wallet: Pubkey::from_str(&entry.address).unwrap(), // panic for invalid wallet
-                token_mint,
+                token_mint: Pubkey::from_str(&entry.token_mint).unwrap(),
                 vesting_start_time,
                 cliff_time,
                 frequency,
@@ -188,6 +190,12 @@ fn create_lock_escrow_for_an_user2(
     let signature = client
         .send_and_confirm_transaction_with_spinner(&tx)
         .unwrap();
+
+    println!(
+        "Created lock escrow: {:?} for token mint: {:?}",
+            &escrow.to_string(),
+            &token_mint.to_string()
+    );
 
     Ok(signature)
 }
